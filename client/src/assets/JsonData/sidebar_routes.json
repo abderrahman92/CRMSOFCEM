@@ -1,0 +1,58 @@
+[
+    {
+        "display_name": "Tableau de bord",
+        "route": "/",
+        "icon": "bx bx-category-alt",
+        "status":"desactive"
+    },
+    {
+        "display_name": "Sociétés",
+        "route": "/Societes",
+        "icon": "bx bxs-bank",
+        "status":"desactive"
+    },
+    {
+        "display_name": "Nouvelle Société",
+        "route": "/Ajouter",
+        "icon": "bx bxs-folder-plus",
+        "status":"desactive"
+    },
+    {
+        "display_name": "Interlocuteur",
+        "route": "/Interlocuteurs",
+        "icon": "bx bx-user-pin",
+        "status":"desactive"
+    },
+    {
+        "display_name": "Contrat",
+        "route": "/Contrats",
+        "icon": "bx bxs-book-content",
+        "status":"desactive"
+    },
+    {
+        "display_name": "Action",
+        "route": "/Action",
+        "icon": "bx bx-bar-chart-alt",
+        "status":"desactive"
+    },
+    {
+        "display_name": "Parametre",
+        "route": "/Parametre",
+        "icon": "bx bx-cog",
+        "status":"desactive"
+    },
+    {
+      "display_name": "Connexion",
+      "route": "/login",
+      "icon": "bx bx-log-in",
+      "status":"active"
+   },
+   {
+    "display_name": "Gestion Utilisateur",
+    "route": "/Register",
+    "icon": "bx bxs-user-plus",
+    "status":"desactive"
+ }
+ 
+
+]
