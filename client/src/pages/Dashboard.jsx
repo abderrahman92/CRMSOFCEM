@@ -251,7 +251,7 @@ const Dashboard = () => {
                         curve: 'smooth'
                     },
                     xaxis: {
-                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep','oct','nov','dec']
+                        categories: ['JAN', 'FÉV', 'MAR', 'AVR', 'MAI', 'JUN', 'JUL', 'AOÛ', 'SEP','OCT','NOV','DÉC']
                     },
                     legend: {
                         position: 'top'
@@ -366,6 +366,43 @@ const statusCards =[
                                     />
                                 </div>
                             </div>
+
+                            <div className="col-6">
+                                <div className="row">
+                                   
+                                    {
+                                        statusCards.map((item, index) => (
+                                            <div className="col-6" key={index}>
+                                                 <a href="Action/32143789900057">
+                                                <StatusCard
+                                                    icon={item.icon}
+                                                    count={item.count}
+                                                    title={item.title}
+                                                />
+                                                 </a>
+                                            </div>
+                                        ))
+                                    }
+                                   
+                                </div>
+                            </div>
+                            <div className="col-6">
+                                <div className="card full-height">
+                                    {/* chart */}
+                                    <Chart
+                                        options={themeReducer === 'theme-mode-dark' ? {
+                                            ...chartOptions.options,
+                                            theme: { mode: 'dark'}
+                                        } : {
+                                            ...chartOptions.options,
+                                            theme: { mode: 'light'}
+                                        }}
+                                        series={chartOptions.series}
+                                        type='line'
+                                        height='100%'
+                                    />
+                                </div>
+                            </div>
                          
                             <div className="col-8">
                                 <div className="card">
@@ -412,6 +449,7 @@ const statusCards =[
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 ): (
                     <div  className="sidebar__item">

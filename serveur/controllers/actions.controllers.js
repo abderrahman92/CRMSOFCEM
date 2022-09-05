@@ -1,7 +1,7 @@
 const db = require("../models");
 const Action = db.action;
 const Op = db.Sequelize.Op;
-// Create and Save a new Societes
+// Create and Save a new action
 exports.create_action = (req, res) => {
   // Create a societes
   const insert = {
