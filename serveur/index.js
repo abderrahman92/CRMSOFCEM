@@ -30,7 +30,7 @@ app.listen(PORT, () => {
 
 
 //syncroniser la base de donner 
-/*
+
 db.sequelize.sync({force: true}).then(() => {
   console.log('Drop and Resync Db');
   initial();
@@ -38,4 +38,4 @@ db.sequelize.sync({force: true}).then(() => {
 
 //insert role user 
 const initial = require('./models/role-user')
-*/
+
