@@ -1,8 +1,7 @@
 import React from 'react'
 
 import './statuscard.css'
-
-const StatusCard = props => {
+const StatusContrat = props => {
     return (
         <div className='status-card'>
             <div className="status-card__icon">
@@ -15,6 +14,4 @@ const StatusCard = props => {
         </div>
     )
 }
-
-
-export default StatusCard
+export default Statuscontrat

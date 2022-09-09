@@ -1,34 +1,20 @@
 import React,{useEffect,useState} from 'react'
-
 import axios from 'axios';
-
 import AuthService from "../services/auth.service";
-
 import { Link } from 'react-router-dom'
-
 import Chart from 'react-apexcharts'
-
 import { useSelector } from 'react-redux'
-
 import StatusCard from '../components/status-card/StatusCard'
-
 import Moment from 'react-moment';
-
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-
 import TextField from '@mui/material/TextField';
-
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
 import 'moment/locale/fr';
-
 import Box from '@mui/material/Box';
-
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-
 import Stack from '@mui/material/Stack';
-//table class
 
+//table class
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -37,9 +23,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-
+//controlleurs 
 import UserService from "../services/user.service";
-
 import AuthAction from  "../services/Action";
 
 
@@ -76,17 +61,17 @@ const renderOrderHead = (item, index) => (
 
 const Dashboard = () => {
 
+    //liste des societer
+        const[ListTest,SetTest]=useState([]);
+        const[Cemeca,SetIscemeca]=useState(false);
 
-  //afficher nombre d'action
-
-
-
-
- 
-    const[ListTest,SetTest]=useState([]);
-    const[Cemeca,SetIscemeca]=useState(false);
-    const [currentUser, setCurrentUser] = useState(undefined);
-    const[Action,SetAction]=useState([]);
+    //afficher le user actuelle 
+        const [currentUser, setCurrentUser] = useState(undefined);
+    
+    //liste des actions 
+        const[Action,SetAction]=useState([]);
+        const Action_util =Action.filter(task=>task.id_utili===currentUser.id)
+        console.log(Action_util)
 
     useEffect(()=>{
         const user = AuthService.getCurrentUser();
@@ -127,39 +112,8 @@ const Dashboard = () => {
               
             }
      },[]) 
-     const Action_util =Action.filter(task=>task.id_utili===currentUser.id)
-     console.log(Action_util)
-    
-
-
-    const latestOrders = {
-        header: [
-            "siret",
-            "code naf",
-            "nom responnsable",
-            "tel",
-            "société"
-        ],
-        
-    }
-    const renderOrderBody = (item, index) => (
-        <tr key={index}>
-            <td>{item.siret}</td>
-            <td>{item.activite_soc}</td>
-            <td>{item.nom_responsable_soc}</td>
-    
-            <td>{item.tel}</td>
-            {Cemeca? (
-                <td>Cemeca</td>
-            ) : (
-                <td>Sofitech</td>
-            )}
-           
-        </tr>
-    ) 
-    console.log()
-
-        // date time input field Action
+   
+    // date time input field Action
         const [valueDate1, setValueDate1] = React.useState(new Date());
         const [valueDate2, setValueDate2] = React.useState(new Date());
 
@@ -169,6 +123,8 @@ const Dashboard = () => {
         const handleChangeDate2 = (newValue) => {
             setValueDate2(newValue);
         };
+    //tableau charte 
+    const [tableau_date ,tableau] =useState([]);    
 
         const mysn =1000 * 3600 * 24
         const fltr_date =Action.filter(task=>(( (new Date (task.date_rdv)-valueDate2)/mysn)<0)  &&((new Date (task.date_rdv)-valueDate1)/mysn)>0)
@@ -224,7 +180,7 @@ const Dashboard = () => {
             const fltrSnov =ListTest.filter(task=>(( (new Date (task.createdAt)).getMonth()===10)) )
              //month dec 
              const fltrSdec =ListTest.filter(task=>(( (new Date (task.createdAt)).getMonth()===11)) )
-
+            
      
              
 
@@ -279,12 +235,21 @@ const statusCards =[
         "title": "action utilisateur"
     }
 ]
+//contrats
+const StatusContrat =[
+    {
+        "icon": "bx bx-bar-chart-alt",
+        "count": fltr_date.length,
+        "title": "Clients SOFITECH "
+    }
+]
        
     const themeReducer = useSelector(state => state.ThemeReducer.mode)
 
         return (
             
             <div>
+                {/* si le client est connecter*/}
                 {currentUser ?(
                     <div>
                         <h2 className="page-header">tableau de bord 
@@ -330,128 +295,170 @@ const statusCards =[
                                 </div>
                         </Box>
                         <div className="row">
-                            <div className="col-6">
-                                <div className="row">
-                                   
-                                    {
-                                        statusCards.map((item, index) => (
-                                            <div className="col-6" key={index}>
-                                                 <a href="Action/32143789900057">
-                                                <StatusCard
-                                                    icon={item.icon}
-                                                    count={item.count}
-                                                    title={item.title}
-                                                />
-                                                 </a>
-                                            </div>
-                                        ))
-                                    }
-                                   
-                                </div>
-                            </div>
-                            <div className="col-6">
-                                <div className="card full-height">
-                                    {/* chart */}
-                                    <Chart
-                                        options={themeReducer === 'theme-mode-dark' ? {
-                                            ...chartOptions.options,
-                                            theme: { mode: 'dark'}
-                                        } : {
-                                            ...chartOptions.options,
-                                            theme: { mode: 'light'}
-                                        }}
-                                        series={chartOptions.series}
-                                        type='line'
-                                        height='100%'
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="col-6">
-                                <div className="row">
-                                   
-                                    {
-                                        statusCards.map((item, index) => (
-                                            <div className="col-6" key={index}>
-                                                 <a href="Action/32143789900057">
-                                                <StatusCard
-                                                    icon={item.icon}
-                                                    count={item.count}
-                                                    title={item.title}
-                                                />
-                                                 </a>
-                                            </div>
-                                        ))
-                                    }
-                                   
-                                </div>
-                            </div>
-                            <div className="col-6">
-                                <div className="card full-height">
-                                    {/* chart */}
-                                    <Chart
-                                        options={themeReducer === 'theme-mode-dark' ? {
-                                            ...chartOptions.options,
-                                            theme: { mode: 'dark'}
-                                        } : {
-                                            ...chartOptions.options,
-                                            theme: { mode: 'light'}
-                                        }}
-                                        series={chartOptions.series}
-                                        type='line'
-                                        height='100%'
-                                    />
-                                </div>
-                            </div>
-                         
-                            <div className="col-8">
-                                <div className="card">
-                                    <div className="card__header">
-                                        <h3>Dernières Sociétés crées</h3>
+                            {/* carte des actions  */}
+                                <div className="col-6">
+                                    <div className="row">
+                                    
+                                        {
+                                            statusCards.map((item, index) => (
+                                                <div className="col-6" key={index}>
+                                                    <a href="Action/32143789900057">
+                                                    <StatusCard
+                                                        icon={item.icon}
+                                                        count={item.count}
+                                                        title={item.title}
+                                                    />
+                                                    </a>
+                                                </div>
+                                            ))
+                                        }
+                                    
                                     </div>
-                                    <div className="card__body">
+                                </div>
+                            {/* chart graphique des clients  */}
+                                <div className="col-6">
+                                    <div className="card full-height">
+                                
+                                        <Chart
+                                            options={themeReducer === 'theme-mode-dark' ? {
+                                                ...chartOptions.options,
+                                                theme: { mode: 'dark'}
+                                            } : {
+                                                ...chartOptions.options,
+                                                theme: { mode: 'light'}
+                                            }}
+                                            series={chartOptions.series}
+                                            type='line'
+                                            height='100%'
+                                        />
+                                    </div>
+                                </div>
+                            {/* cart des societe clientes  */}
+                            {
+                                StatusContrat.map((item, index) => (
+                                    <div className="col-6" key={index}>
+                                        <a href="Action/32143789900057">
+                                        <StatusCard
+                                            icon={item.icon}
+                                            count={item.count}
+                                            title={item.title}
+                                        />
+                                        </a>
+                                    </div>
+                                ))
+                            }       
+                                <div className="col-6">
+                                    <div className="card full-height">
+                                        {/* chart */}
+                                        <Chart
+                                            options={themeReducer === 'theme-mode-dark' ? {
+                                                ...chartOptions.options,
+                                                theme: { mode: 'dark'}
+                                            } : {
+                                                ...chartOptions.options,
+                                                theme: { mode: 'light'}
+                                            }}
+                                            series={chartOptions.series}
+                                            type='line'
+                                            height='100%'
+                                        />
+                                    </div>
+                                </div>
+                            {/* dernier societe cree */}
+                                <div className="col-6">
+                                    <div className="card">
+                                        <div className="card__header">
+                                            <h3>Dernières Sociétés crées</h3>
+                                        </div>
+                                        <div className="card__body">
+                                            
                                         
-                                      
-                                    <TableContainer component={Paper}>
-                                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                        <TableHead>
-                                        <TableRow>
-                                            <TableCell>siret</TableCell>
-                                            <TableCell align="right">nom_soc</TableCell>
-                                            <TableCell align="right">observation</TableCell>
-                                            <TableCell align="right">adresse postal</TableCell>
-                                            <TableCell align="right">date ajouté</TableCell>
-                                        </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                        {ListTest.map((row) => (
-                                            <TableRow
-                                            key={row.siret}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                            >
-                                            <TableCell component="th" scope="row">
-                                                {row.siret}
-                                            </TableCell>
-                                            <TableCell align="right">{row.nom_soc}</TableCell>
-                                            <TableCell align="right">{row.observation}</TableCell>
-                                            <TableCell align="right">{row.adresse_local}</TableCell>
-                                            <TableCell align="right"> <Moment fromNow>{row.createdAt}</Moment></TableCell>
+                                        <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                            <TableHead>
+                                            <TableRow>
+                                                <TableCell>siret</TableCell>
+                                                <TableCell align="right">nom_soc</TableCell>
+                                                <TableCell align="right">observation</TableCell>
+                                                <TableCell align="right">adresse postal</TableCell>
+                                                <TableCell align="right">date ajouté</TableCell>
                                             </TableRow>
-                                        ))}
-                                        </TableBody>
-                                    </Table>
-                                    </TableContainer>
-                                        
-                                    </div>
-                                    <div className="card__footer">
-                                        <Link to='Societes'>view all</Link>
+                                            </TableHead>
+                                            <TableBody>
+                                            {ListTest.map((row) => (
+                                                <TableRow
+                                                key={row.siret}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                <TableCell component="th" scope="row">
+                                                    {row.siret}
+                                                </TableCell>
+                                                <TableCell align="right">{row.nom_soc}</TableCell>
+                                                <TableCell align="right">{row.observation}</TableCell>
+                                                <TableCell align="right">{row.adresse_local}</TableCell>
+                                                <TableCell align="right"> <Moment fromNow>{row.createdAt}</Moment></TableCell>
+                                                </TableRow>
+                                            ))}
+                                            </TableBody>
+                                        </Table>
+                                        </TableContainer>
+                                            
+                                        </div>
+                                        <div className="card__footer">
+                                            <Link to='Societes'>view all</Link>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                             {/* dernier action cree */}
+                                <div className="col-6">
+                                    <div className="card">
+                                        <div className="card__header">
+                                            <h3>Dernières actions crées</h3>
+                                        </div>
+                                        <div className="card__body">
+                                            
+                                        
+                                        <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                            <TableHead>
+                                            <TableRow>
+                                                <TableCell align="right">Nom société</TableCell>
+                                                <TableCell align="right">Date du RDV</TableCell>
+                                                <TableCell align="right">Nom interlocuteur</TableCell>
+                                                <TableCell align="right">Type d'action</TableCell>
+                                            </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                            {Action_util.map((row) => (
+                                                <TableRow
+                                                key={row.nom_societe}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                <TableCell component="th" scope="row">
+                                                    {row.nom_societe}
+                                                </TableCell>
+                                                <TableCell align="right">{row.date_rdv}</TableCell>
+                                                <TableCell align="right">{row.nom_interlocuteur}</TableCell>
+                                                <TableCell align="right"> <Moment fromNow>{row.type_action}</Moment></TableCell>
+                                                </TableRow>
+                                            ))}
+                                            </TableBody>
+                                        </Table>
+                                        </TableContainer>
+                                            
+                                        </div>
+                                        <div className="card__footer">
+                                            <Link to='Societes'>view all</Link>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                         
                     </div>
-                ): (
+                    
+                ):
+               
+                (
                     <div  className="sidebar__item">
                         <div  disabled  className={`sidebar__item-inner `}>
                         <i class='bx bxs-user-x' ></i>
