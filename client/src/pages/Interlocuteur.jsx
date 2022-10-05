@@ -7,9 +7,11 @@ import AuthService from "../services/auth.service";
 import { useParams } from "react-router-dom";
 import UserService from "../services/user.service";
 import axios from 'axios';
+import fonction_inter from "../assets/JsonData/fonction_interlocuteur.json"
 //table class
 
 import Table from '@mui/material/Table';
+import Multiselect from 'multiselect-react-dropdown';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -19,6 +21,12 @@ import Paper from '@mui/material/Paper';
 
 
 const Action = (props) => {
+
+  const [myJSON, setactive] = useState([]);
+
+  const land =(e) => {
+    setactive(Array.isArray(e)?e.map(x=>x.NOM):[])
+  }
 
     const [successful, setSuccessful] = useState(false);
     const [message, setMessage] = useState("");
@@ -86,7 +94,7 @@ const user = AuthService.getCurrentUser()
 
   
   const saveAction = (e) => {
-  
+    const fonction = myJSON.join();
     var data = {
       nom:Interlocuteur.nom,
       prenom:Interlocuteur.prenom,
@@ -94,7 +102,7 @@ const user = AuthService.getCurrentUser()
       adresse: Interlocuteur.adresse,
       code_postale:Interlocuteur.code_postale,
       tel:Interlocuteur.tel,
-      fonction_inter:Interlocuteur.fonction_inter,
+      fonction_inter:fonction,
       id_soc:nb,
     };
   
@@ -141,149 +149,146 @@ const handleInputChange = event => {
 
     return (
         <div className="col-md-12">
+          <div className="row">
+            <div className="col-6">
+              {/* ajouter un user */}
+              <div className="card card-container">
+                <h1> Ajouter un interlocuteur</h1>
+                    <Form onSubmit={saveAction} ref={form}>
+                        {!successful && (
+                            <div>
+                              <div className="form-group">
+                                <label htmlFor="username">nom</label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  name="nom"
+                                  value={Interlocuteur.nom}
+                                  onChange={handleInputChange}
+                                  
+                                />
+                              </div>
+            
+                              <div className="form-group">
+                                <label htmlFor="username">prenom</label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  name="prenom"
+                                  value={Interlocuteur.prenom}
+                                  onChange={handleInputChange}
+                                  
+                                />
+                              </div>
+                              <div className="form-group">
+                                <label htmlFor="username">email</label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  name="email"
+                                  value={Interlocuteur.email}
+                                  onChange={handleInputChange}
+                                  
+                                />
+                              </div>
+                  
+              
+                              <div className="form-group">
+                                <label htmlFor="email">tel</label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  name="tel"
+                                  value={Interlocuteur.tel}
+                                  onChange={handleInputChange}
+                                  
+                                />
+                              </div>        
+                            
+                              <div className="form-group">
+                          
+                                <label htmlFor="title">fonction</label>
+                                <Multiselect
+                                    displayValue="NOM"
+                                    groupBy="TYPE"
+                                    value="4"
+                                    isObject={true}
+                                    selectedValues={console.log}
+                                    onChange={console.log}
+                                    id={console.log}
+                                    onNOMPressFn={function noRefCheck(){}}
+                                    onRemove={function noRefCheck(){}}
+                                    onSearch={function noRefCheck(){}}
+                                    onSelect={land}
+                                    options={fonction_inter}
+                                    showCheckbox
+                                  />
+                                
+                              </div>
+                                  
+                            
+
+                            
+
+                              <div className="form-group">
+                                <button className="btn btn-primary btn-block">Valider l'action</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {message && (
+                            <div className="form-group">
+                              <div
+                                className={
+                                  successful
+                                    ? "alert alert-success"
+                                    : "alert alert-danger"
+                                }
+                                role="alert"
+                              >
+                                {message}
+                              </div>
+                            </div>
+                          )}
+                            <CheckButton style={{ display: "none" }} ref={checkBtn} />
+                    </Form>
+              </div>
+            </div>
+            <div className="col-6">
+              <div className="card card-container">
+              <h1>liste des interlocuteurs</h1>
+              <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                      <TableRow>
+                          <TableCell>nom</TableCell>
+                          <TableCell align="left">prenom</TableCell>
+                          <TableCell align="left">fonction</TableCell>
+                          <TableCell align="left">email</TableCell>
+                          <TableCell align="left">telephone</TableCell>
+                      </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filterInter.map((row) => (
+                            <TableRow key={row.nom}>
+                              <TableCell>{row.nom}</TableCell> 
+                              <TableCell>{row.prenom}</TableCell> 
+                              <TableCell>{row.fonction_inter}</TableCell> 
+                              <TableCell>{row.email}</TableCell>        
+                              <TableCell>{row.tel}</TableCell>    
+                            </TableRow>
+                        ))}
+                      </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+            </div>
+           
+          </div>
   
          
-          <div className="card card-container">
-          <TableContainer component={Paper}>
-                                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                        <TableHead>
-                                        <TableRow>
-                                            <TableCell>nom</TableCell>
-                                            <TableCell align="left">prenom</TableCell>
-                                            <TableCell align="left">fonction</TableCell>
-                                            <TableCell align="left">adresse postal</TableCell>
-                                            <TableCell align="left">telephone</TableCell>
-                                        </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                          {filterInter.map((row) => (
-                                              <TableRow key={row.nom}>
-                                                <TableCell>{row.nom}</TableCell> 
-                                                <TableCell>{row.prenom}</TableCell> 
-                                                <TableCell>{row.fonction_inter}</TableCell> 
-                                                <TableCell>{row.adresse}{row.code_postal}</TableCell>        
-                                                <TableCell>{row.tel}</TableCell>    
-                                              </TableRow>
-                                          ))}
-                                        </TableBody>
-                                    </Table>
-            </TableContainer>
-          </div>
     
-   {/* ajouter un user */}
-   <div className="card card-container">
-          <h1> Ajouter un interlocuteur</h1>
-           
-            <Form onSubmit={saveAction} ref={form}>
-                {!successful && (
-                    <div>
-                       <div className="form-group">
-                        <label htmlFor="username">nom</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="nom"
-                          value={Interlocuteur.nom}
-                          onChange={handleInputChange}
-                          
-                        />
-                      </div>
-    
-                      <div className="form-group">
-                        <label htmlFor="username">prenom</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="prenom"
-                          value={Interlocuteur.prenom}
-                          onChange={handleInputChange}
-                          
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="username">email</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="email"
-                          value={Interlocuteur.email}
-                          onChange={handleInputChange}
-                          
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="username">adresse</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="adresse"
-                          value={Interlocuteur.adresse}
-                          onChange={handleInputChange}
-                          
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="username">code postal</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="code_postale"
-                          value={Interlocuteur.code_postale}
-                          onChange={handleInputChange}
-                          
-                        />
-                      </div>
-      
-                      <div className="form-group">
-                        <label htmlFor="email">tel</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="tel"
-                          value={Interlocuteur.tel}
-                          onChange={handleInputChange}
-                          
-                        />
-                      </div>        
-                      <div className="form-group">
-                        <label htmlFor="email">fonction</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="fonction_inter"
-                          value={Interlocuteur.fonction_inter}
-                          onChange={handleInputChange}
-                          
-                        />
-                      </div>    
-                     
-                     
-
-                    
-
-                      <div className="form-group">
-                        <button className="btn btn-primary btn-block">Valider l'action</button>
-                      </div>
-                    </div>
-                  )}
-
-                  {message && (
-                    <div className="form-group">
-                      <div
-                        className={
-                          successful
-                            ? "alert alert-success"
-                            : "alert alert-danger"
-                        }
-                        role="alert"
-                      >
-                        {message}
-                      </div>
-                    </div>
-                  )}
-                    <CheckButton style={{ display: "none" }} ref={checkBtn} />
-              </Form>
-          </div> 
+   
           </div>
       );
     }

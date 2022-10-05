@@ -10,8 +10,9 @@ import './../assets/css/picklist.css'
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
 import liste from "../assets/JsonData/liste_syndicat.json"
+import origine_prospect from "../assets/JsonData/origine_prospect.json"
 import Button from '@mui/material/Button';
-
+import dotenv from  'dotenv'
 
 const AddTutorial = () => {
 
@@ -135,20 +136,21 @@ const AddTutorial = () => {
         }
   };
   
-  console.log("test",myJSON)
+
  
 
 
  //API INSEE
-  const API_INSEE_SIRET = 'https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/?siret='
+  const API_INSEE_SIRET = 'https://api.insee.fr/entreprises/sirene/V3/siret/'
    var b = String(Societe.siret)
-   console.log(b.length)
-   const chaine = API_INSEE_SIRET +b
+   console.log(process.env.TOKEN)
+   
   const getAPINSEE =()=> {
   
-    return axios.get(API_INSEE_SIRET+b);
+    return axios.get(API_INSEE_SIRET +b, { headers: {"Authorization" : `ab389ec9-3d4e-3831-a3dc-7f7b09c9ba0b`}
+      
+    });
   }
-  console.log()
   const [SIRETAPI, setSIRETAPI] = useState([]);
   useEffect(() =>{
         //afficher API insee
@@ -290,6 +292,26 @@ console.log(SIRETAPI)
                     name="code_postal"
                   />
                   )}
+                </div>
+                <div className="form-group">
+                  
+                  <label htmlFor="title">origine du prospect </label>
+                  <Multiselect
+                      displayValue="NOM"
+                      groupBy="TYPE"
+                      value="4"
+                      isObject={true}
+                      selectedValues={console.log}
+                      onChange={console.log}
+                      id={console.log}
+                      onNOMPressFn={function noRefCheck(){}}
+                      onRemove={function noRefCheck(){}}
+                      onSearch={function noRefCheck(){}}
+                      onSelect={land}
+                      options={origine_prospect}
+                      showCheckbox
+                    />
+                  
                 </div>
               
                 <div className="form-group">

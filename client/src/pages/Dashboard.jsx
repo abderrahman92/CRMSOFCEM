@@ -13,6 +13,8 @@ import 'moment/locale/fr';
 import Box from '@mui/material/Box';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Stack from '@mui/material/Stack';
+import moment from "moment";
+import "moment/locale/fr";
 
 //table class
 import Table from '@mui/material/Table';
@@ -22,6 +24,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
 
 //controlleurs 
 import UserService from "../services/user.service";
@@ -238,13 +241,22 @@ const statusCards =[
 //contrats
 const StatusContrat =[
     {
-        "icon": "bx bx-bar-chart-alt",
-        "count": fltr_date.length,
+        "icon": "bx bxs-contact",
+        "count": 0,
         "title": "Clients SOFITECH "
     }
 ]
        
     const themeReducer = useSelector(state => state.ThemeReducer.mode)
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [page, setPage] = React.useState(0);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+      const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+      };
 
         return (
             
@@ -337,13 +349,18 @@ const StatusContrat =[
                             {
                                 StatusContrat.map((item, index) => (
                                     <div className="col-6" key={index}>
-                                        <a href="Action/32143789900057">
-                                        <StatusCard
-                                            icon={item.icon}
-                                            count={item.count}
-                                            title={item.title}
-                                        />
-                                        </a>
+                                         <div className="row justify-content-md-center">
+                                            <div className="col-6" key={index}>
+                                            <a href="#">
+                                                <StatusCard
+                                                    icon={item.icon}
+                                                    count={item.count}
+                                                    title={item.title}
+                                                />
+                                            </a>
+                                            </div>
+                                        </div>
+                                       
                                     </div>
                                 ))
                             }       
@@ -402,6 +419,15 @@ const StatusContrat =[
                                             </TableBody>
                                         </Table>
                                         </TableContainer>
+                                        <TablePagination
+                                            rowsPerPageOptions={[2, 5, 10]}
+                                            component="div"
+                                            count={ListTest.length}
+                                            rowsPerPage={rowsPerPage}
+                                            page={page}
+                                            onPageChange={handleChangePage}
+                                            onRowsPerPageChange={handleChangeRowsPerPage}
+                                        />
                                             
                                         </div>
                                         <div className="card__footer">
@@ -437,9 +463,9 @@ const StatusContrat =[
                                                 <TableCell component="th" scope="row">
                                                     {row.nom_societe}
                                                 </TableCell>
-                                                <TableCell align="right">{row.date_rdv}</TableCell>
+                                                <TableCell align="right">{moment(row.date_rdv).format("DD  MMMM YYYY HH:mm")}</TableCell>
                                                 <TableCell align="right">{row.nom_interlocuteur}</TableCell>
-                                                <TableCell align="right"> <Moment fromNow>{row.type_action}</Moment></TableCell>
+                                                <TableCell align="right"> {row.type_action}</TableCell>
                                                 </TableRow>
                                             ))}
                                             </TableBody>

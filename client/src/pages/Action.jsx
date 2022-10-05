@@ -201,40 +201,8 @@ import  liste  from "../assets/JsonData/centre-affaire.json";
 
         return (
         <div className="col-md-12">
-            {/* ajouter une action */}
-              <h3><i class='bx bxs-bank danger'></i> liste des actions</h3>
-              {/* liste des actions */}
-                      <TableContainer component={Paper}>
-                                              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                                  <TableHead>
-                                                  <TableRow>
-                                                      <TableCell>nom societe</TableCell>
-                                                      <TableCell align="right">date rdv</TableCell>
-                                                      <TableCell align="right">nom_interlocuteur</TableCell>
-                                                      <TableCell align="right">date_action</TableCell>
-                                                      <TableCell align="right">type</TableCell>
-                                                  </TableRow>
-                                                  </TableHead>
-                                                  <TableBody>
-                                                  {listeActUser.map((row) => (
-                                                      <TableRow
-                                                      key={row.nom}
-                                                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                      >
-                                                      <TableCell component="th" scope="row">
-                                                          {row.nom_societe}
-                                                      </TableCell>
-                                                      
-                                                      <TableCell align="right">{row.date_rdv}</TableCell>
-                                                      <TableCell align="right">{row.nom_interlocuteur}</TableCell>
-                                                      <TableCell align="right">{row.date_action}</TableCell>
-                                                      <TableCell align="right">{row.type_action}</TableCell>
-                                                      </TableRow>
-                                                  ))}
-                                                  </TableBody>
-                                              </Table>
-                      </TableContainer>
-                        <br />
+           
+           
               {/* ajouter des actions */}
               <h3><i class='bx bxs-bank danger'></i> Ajouter une action</h3>
                   <div className="card card-container">
@@ -262,7 +230,7 @@ import  liste  from "../assets/JsonData/centre-affaire.json";
                                 <div className="form-group">
                                   <label htmlFor="username">Date de l'action</label>
                                   <Input
-                                    type="date"
+                                    type="datetime-local"
                                     className="form-control"
                                     name="date_rdv"
                                     value={Action.date_rdv}
