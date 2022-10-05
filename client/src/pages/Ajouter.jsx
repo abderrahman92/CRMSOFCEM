@@ -144,19 +144,17 @@ const AddTutorial = () => {
   const API_INSEE_SIRET = 'https://api.insee.fr/entreprises/sirene/V3/siret/'
    var b = String(Societe.siret)
    console.log(process.env.TOKEN)
-   
+
   const getAPINSEE =()=> {
   
-    return axios.get(API_INSEE_SIRET +b, { headers: {"Authorization" : `ab389ec9-3d4e-3831-a3dc-7f7b09c9ba0b`}
+    return   axios.get(API_INSEE_SIRET+b, {
+      method: "GET",
+      headers: {"Authorization": `Bearer ab389ec9-3d4e-3831-a3dc-7f7b09c9ba0b`}
+    })
       
-    });
+    ;
   }
   const [SIRETAPI, setSIRETAPI] = useState([]);
-  useEffect(() =>{
-        //afficher API insee
-        
-       
-},[]);
 
 
 const handleInputChange = event => {
@@ -215,7 +213,7 @@ console.log(SIRETAPI)
                     type="text"
                     className="form-control"
                     id="title"
-                    value={Societe.nom_soc=e.unite_legale.denomination}
+                    value={Societe.nom_soc}
                     onChange={handleInputChange}
                     validations={[required,vnom_soc]}
                     name="nom_soc"
