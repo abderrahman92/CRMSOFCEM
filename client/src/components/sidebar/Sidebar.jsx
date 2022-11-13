@@ -1,219 +1,204 @@
 import React, { useEffect, useState } from 'react'
-
 import { Link } from 'react-router-dom'
-
 import './sidebar.css'
-
 import AuthService from "../../services/auth.service";
-
 import UserService from "../../services/user.service";
-
 import EventBus from "../../common/EventBus"
-
 import logo from '../../assets/images/sofitech.png'
+import logoCemeca from '../../assets/images/logo-cemeca.png';
+import  * as sidebareRoute from   '../../assets/JsonData/sidebareRoute';
+import {SidebarItedes,SidebarIteact} from '../sidebar/SidebarItem'
+import Loader from '../LoadingPage';
 
-import logoCemeca from '../../assets/images/logo-cemeca.png'
-
-import sidebar_items from '../../assets/JsonData/sidebar_routes.json'
-import { useParams } from "react-router-dom";
-import Role from '../../services/role'
-
-import axios from "axios";
-import role from '../../services/role';
- 
-//sidabr desactivation parametres
-const SidebarItedes = props => {
-
-    const desactive = props.desactive ? '' : 'desactive';
-
-    return (
-        <div  className="sidebar__item">
-            <div disabled  className={`sidebar__item-inner ${desactive}`}>
-                <i className={props.icon}></i>
-                <span >
-                    {props.title}
-                    {props.status}
-                </span>           
-            </div>  
-        </div>  
-    )
-}
-//sidabr activation parametres
-const SidebarIteact = props => {
-
-    const active = props.active ? 'active' : '';
-
-    return (
-        <div disabled className="sidebar__item">
-            <div  disabled  className={`sidebar__item-inner ${active}`}>
-                <i className={props.icon}></i>
-                <span >
-                    {props.title}
-                    {props.status}
-                </span>                
-            </div>
-        </div>
-        
-    )
-}
-const logOut = () => {
-    AuthService.logout();
-  };
 const Sidebar = props => {
-
     const active = props.active ? 'active' : '';
-    const [new_sidbar,setSidbar]=useState(sidebar_items);
+    const [new_sidbar, setSidbar] = useState([]);
     const [currentUser, setCurrentUser] = useState(undefined);
-    const [adminstate, setadminstate] = useState(undefined);
-    const [roleAuth,setRoleAuth] = useState([]);
-    const [cemeca,setcemeca] = useState(false);
-    const [sofitech,setSofitech] = useState(false);
+    const [roleAdmin, setRoleAdmin] = useState([]);
+    const [roleAuth, setRoleAuth] = useState([]);
+    const [cemeca, setcemeca] = useState(false);
+    const [sofitech, setSofitech] = useState(false);
+    const [loader, setloader] = useState(false);
+    // Get  URL from window location
+        const nameUrl = window.location.href.slice(21, 28)
+        const nouveaustate = [...new_sidbar]
 
-    // Get ID from URL
-        const params = useParams(); 
-        console.log(params)
-      
-        
-
-    // GET USER 
-    const user = AuthService.getCurrentUser()
-    //GET ROLE 
-    const retrieveRole = () => {
-
-        if(user){
+    // DECONNECTION
+        const logOut = () => {AuthService.logout()};
+    // CONNECTION 
+        const user = AuthService.getCurrentUser()
+    // GET ROLE 
+        const retrieveRole = () => {
+        if (user) {
+            //user 
+            nouveaustate.push(sidebareRoute.Tableaudebord, sidebareRoute.ajouter,sidebareRoute.Societes);
+            const expr = nameUrl;
+           
+            
             UserService.getSofitechBoard().then(
                 response => {
+                   
                     setSofitech(true)
                     setcemeca(false)
                     setRoleAuth(response.data);
-                    
+
                 },
+                
                 error => {
                     setSofitech(false)
                     setcemeca(true)
                     setRoleAuth({
-                    content:
-                      (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                      error.message ||
-                      error.toString()
-                  });
-                }
-              );
-           
-         }
-
-      }; 
-
-    //FILTER USER WHERE ROLE
-
-    console.log(roleAuth)
-   
-     useEffect(()=>{ 
-        const user = AuthService.getCurrentUser()
-            if (user){
-                retrieveRole();
-                const nouveaustate = [...new_sidbar]
-                UserService.getAdminBoard().then(
-                    response => {
-                        nouveaustate[7].status = "desactive"
-                        nouveaustate[2].status = "active"
-                        nouveaustate[8].status = "active"
-                        setadminstate({
-                        content: response.data
-                        
-                      });
-                    },
-                    error => {
-                        setadminstate({
                         content:
-                          (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                          error.message ||
-                          error.toString()
-                      });
-              
-                      if (error.response && error.response.status === 401) {
-                        EventBus.dispatch("logout");
-                      }
+                            (error.response &&
+                                error.response.data &&
+                                error.response.data.message) ||
+                            error.message ||
+                            error.toString()
+                    });
+                }
+            );
+            
+            UserService.getAdminBoard().then(
+                response => {
+                    switch (expr) {
+                        case '/Register':
+        
+                            nouveaustate.push(sidebareRoute.gestion,sidebareRoute.desinterlocuteur, sidebareRoute.desAction);
+                            break;
                     }
-                  );
-                nouveaustate[7].status = "desactive"
-                nouveaustate[0].status = "active"
-                nouveaustate[2].status = "active"
-                nouveaustate[1].status = "active"
-                setSidbar(nouveaustate) 
-                setCurrentUser(user) 
+                  
+                    setRoleAdmin(response.data);
+                    setCurrentUser(user)
+                
+                    
+                    
+                },
+                error => {
+                    setRoleAdmin({
+                        content:
+                            (error.response &&
+                                error.response.data &&
+                                error.response.data.message) ||
+                            error.message ||
+                            error.toString()
+                    });
+
+                    if (error.response && error.response.status === 401) {
+                        EventBus.dispatch("logout");
+                    }
+                }
+            );
+            if(roleAdmin){
+                nouveaustate.push(sidebareRoute.gestion);
+                setSidbar(nouveaustate)
             }
-     },[]) 
+            switch (expr) {
+                case '/Interl':
 
- 
-    const activeItem = new_sidbar.findIndex(item => item.route === props.location.pathname)
-     
-      //login desactiver
-      const desaItem =new_sidbar.filter(task=>task.status==="desactive")
-      const actItem =new_sidbar.filter(task=>task.status==="active")
+                    nouveaustate.push(sidebareRoute.interlocuteur, sidebareRoute.desAction);
+                    break;
 
-     const renderElement = () =>{
-      if (cemeca === true){
-          return <img  src={logoCemeca} alt="company logo" />
-      }
-      else if (sofitech === true) {
-      return <img  src={logo} alt="company logo" />
+                case '/Action':
+                    
+                    nouveaustate.push(sidebareRoute.Action, sidebareRoute.desinterlocuteur);
+                    break;
+                case '/Societ':
+
+                    nouveaustate.push(sidebareRoute.desAction, sidebareRoute.desinterlocuteur);
+                    break;
+                case '/Ajouter':
+
+                    nouveaustate.push(sidebareRoute.desAction, sidebareRoute.desinterlocuteur);
+                    break;
+    
+                case '/':
+
+                    nouveaustate.push(sidebareRoute.desAction, sidebareRoute.desinterlocuteur);
+                    break;
+
+
+
+            }
+            setSidbar(nouveaustate)
+
+        }
+        //DECONNECTION
+        else{
+            nouveaustate.push(sidebareRoute.connexion);
+            setSidbar(nouveaustate)
+        }
+
+        };
+  
+   
+    useEffect(() => {     
+            retrieveRole()   
+    }, [])
+    //ACTIVE LINK 
+    const activeItem = new_sidbar.findIndex(item => item.route.includes(props.location.pathname))
+    const activeItem2 = new_sidbar.findIndex(item => item.route === nameUrl)
+    //FILTER SIDEBAR CONNECTION && DECONNECTION
+    const desaItem = new_sidbar.filter(task => task.status === "desactive")
+    const actItem = new_sidbar.filter(task => task.status === "active")
+
+    const renderImage = () => {
+        if (cemeca === true) {
+            return <img src={logoCemeca} alt="company logo" />
+        }
+        else if (sofitech === true) {
+            return <img src={logo} alt="company logo" />
+        }
     }
-     }
+  
     return (
         <div className='sidebar'>
             <div className="sidebar__logo">
-                {renderElement()}
+                {renderImage()}
 
             </div>
-            {
-                actItem.map((item, index) => (
-                    <Link  to={item.route} key={index}>
-                       
-                        <SidebarIteact
+            {actItem.map((item, index) => (
+                    <Link to={item.route} key={index}  >
+
+                        <SidebarIteact key={index}
                             title={item.display_name}
                             icon={item.icon}
-                            active={index === activeItem}
-                           
+                            active={(index === activeItem2) || (index === activeItem)}
+
                         />
                     </Link>
-                ))
-            },
-         ,{currentUser ?(
+                ))}
+            {currentUser ? (
                 <div>
                     {
                         desaItem.map((item, index) => (
-                                <SidebarItedes
-                                    title={item.display_name}
-                                    icon={item.icon}
-                                    active={index === activeItem}
-                                
-                                />
-                        )) 
+                            <SidebarItedes key={index}
+                                title={item.display_name}
+                                icon={item.icon}
+                                active={(index === activeItem2) || (index === activeItem)}
+
+                            />
+                        ))
                     }
-                    <div  className="sidebar__item">
-                        <div  className={`sidebar__item-inner${active}`}>
-                        <i className='bx bxs-log-out'></i>
+                    <div className="sidebar__item">
+                        <div className={`sidebar__item-inner${active}`}>
+                            <i className='bx bxs-log-out'></i>
                             <a href="/login" className="nav-link" onClick={logOut}>Déconnexion</a>
                         </div>
-                    
+
                     </div>
-                
-                </div> 
-                
-                
-              ): (
-                <div  className="sidebar__item">
-                  
-                    
+
                 </div>
-              )}
+
+
+            ) : (
+                <div className="sidebar__item">
+
+
+                </div>
+            )}
         </div>
     )
 }
 
 export default Sidebar
+

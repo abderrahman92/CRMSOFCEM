@@ -18,8 +18,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Loader from "../components/LoadingPage";
 const Example = ({ type, color }) => (
-    <ReactLoading type={type} color={color} height={667} width={375} />
+  <ReactLoading type={type} color={color} height={667} width={375} />
 );
 function Copyright(props) {
   return (
@@ -50,7 +51,7 @@ const Login = () => {
   const checkBtn = useRef();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(undefined);
   const [message, setMessage] = useState("");
   const [historique_auth, sethistorique_auth] = useState("");
   const onChangeUsername = (e) => {
@@ -64,17 +65,23 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     setMessage("");
-    setLoading(true);
+    
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
       AuthService.login(username, password).then(
         () => {
           const message = 'connection etablie !';
-          const password ='********'
-          history.push("/");
-          window.location.reload();
-          AuthService.create_historique_auth(username, password,message).then(
-            () => {   
+          const password = '********'  
+          setLoading(true)
+          setTimeout(() => {
+                setLoading(false)
+                history.push("/");
+                window.location.reload();
+              }, 1000)
+        
+          
+          AuthService.create_historique_auth(username, password, message).then(
+            () => {
             },
             (error) => {
               const resMessage =
@@ -84,13 +91,14 @@ const Login = () => {
                 error.message ||
                 error.toString();
               setMessage(resMessage);
+             
             }
           );
         },
         (error) => {
           const message = 'connection echouer !'
-          AuthService.create_historique_auth(username, password,message).then(
-            () => {   
+          AuthService.create_historique_auth(username, password, message).then(
+            () => {
             },
             (error) => {
               const resMessage =
@@ -108,98 +116,135 @@ const Login = () => {
               error.response.data.message) ||
             error.message ||
             error.toString();
-          setLoading(false);
+          
           setMessage(resMessage);
         }
       );
     } else {
-      setLoading(false);
+      
     }
   };
   return (
-    
+
     <div className="col-md-12">
-      <div className="card card-container">
-      <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              onChange={onChangeUsername}
-              id="email"
-              label="Email Address"
-              name="username"
-              value={username}
-              autoComplete="username"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              value={password}
-              onChange={onChangePassword}
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+      {loading ?
+        (
+        <div className="card card-container">
+        <ThemeProvider theme={theme}>
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box
+              sx={{
+                marginTop: 8,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
             >
-              Sign In
-            </Button >
-            {message && (
-            <div className="form-group">
-              <div className="alert alert-danger" role="alert">
-                {message}
-              </div>
-            </div>
-          )}
-            <Grid container>
-              <Grid item xs>
-               
-              </Grid>
-              <Grid item>
+              <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <LockOutlinedIcon />
                 
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
-  
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Sign in
+                <br></br>
+                <Loader />
+              </Typography>
+              
+            </Box>
+            <Copyright sx={{ mt: 8, mb: 4 }} />
+          </Container>
+        </ThemeProvider>
+
         <Form onSubmit={handleLogin} ref={form}>
-         
+
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
         </Form>
-      </div>
+      </div>)
+        : (
+          <div className="card card-container">
+          <ThemeProvider theme={theme}>
+            <Container component="main" maxWidth="xs">
+              <CssBaseline />
+              <Box
+                sx={{
+                  marginTop: 8,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                  <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                  Sign in
+                </Typography>
+                <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    onChange={onChangeUsername}
+                    id="email"
+                    label="Identifiant"
+                    name="username"
+                    value={username}
+                    autoComplete="username"
+                    autoFocus
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    value={password}
+                    onChange={onChangePassword}
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" />}
+                    label="Remember me"
+                  />
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Sign In
+                  </Button >
+                  {message && (
+                    <div className="form-group">
+                      <div className="alert alert-danger" role="alert">
+                        {message}
+                      </div>
+                    </div>
+                  )}
+                  <Grid container>
+                    <Grid item xs>
+  
+                    </Grid>
+                    <Grid item>
+  
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Box>
+              <Copyright sx={{ mt: 8, mb: 4 }} />
+            </Container>
+          </ThemeProvider>
+  
+          <Form onSubmit={handleLogin} ref={form}>
+  
+            <CheckButton style={{ display: "none" }} ref={checkBtn} />
+          </Form>
+        </div>
+        )}
+    
     </div>
   );
 };

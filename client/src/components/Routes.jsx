@@ -12,12 +12,14 @@ import AuthService from "../services/auth.service";
 import Interlocuteur from '../pages/Interlocuteur'
 import CustomerInfo from '../pages/CustomerInfo'
 import CustomerModify from '../pages/societeMod'
+import { Redirect } from 'react-router-dom';
 const Routes = () => {
     const user = AuthService.getCurrentUser();
     return (
         <Switch>
             <Route path='/' exact component={Dashboard}/>
             {user? <Route path='/Action/:id' component={Action}/>: null }
+             {user?<Route path='/Action' element={ <Redirect to="/" /> }/>: null }
             <Route path='/Societes' component={Customers}/>
             <Route path='/Societe/:id' component={CustomerInfo}/>
             <Route path='/modifier/:id' component={CustomerModify}/>

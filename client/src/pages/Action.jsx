@@ -139,7 +139,7 @@ import  liste  from "../assets/JsonData/centre-affaire.json";
             //ajouter l'action      
               const [Action, setAction] = useState({initial1ctionState});
               const saveAction = (e) => {
-                var data = {
+                  var data = {
                     nom_interlocuteur:Action.nom_interlocuteur,
                     nom_societe:actItem[0].nom_soc,
                     date_rdv:Action.date_rdv,
@@ -229,7 +229,7 @@ import  liste  from "../assets/JsonData/centre-affaire.json";
 
                                 <div className="form-group">
                                   <label htmlFor="username">Date de l'action</label>
-                                  <Input
+                                  <input
                                     type="datetime-local"
                                     className="form-control"
                                     name="date_rdv"

@@ -151,3 +151,8 @@ input:focus {
     background-color: var(--main-color-orange);
     color: #fff;
 }
+.cherche-position{
+    width: 100px;
+    position: relative;
+    left: 50px;
+}

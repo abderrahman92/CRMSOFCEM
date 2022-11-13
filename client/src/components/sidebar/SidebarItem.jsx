@@ -1,19 +1,38 @@
 import React from 'react'
 
-const SidebarItem = props => {
+//sidabr desactivation parametres
+export const SidebarItedes = props => {
 
-    const active = props.active ? 'active' : ''
+    const active = props.desactive ? '' : 'desactive';
 
     return (
         <div className="sidebar__item">
-            <div className={`sidebar__item-inner ${active}`}>
+            <div disabled className={`sidebar__item-inner ${active}`}>
                 <i className={props.icon}></i>
-                <span>
+                <span >
                     {props.title}
+                    {props.status}
                 </span>
             </div>
         </div>
     )
 }
+//sidabr activation parametres
+export  const SidebarIteact = props => {
 
-export default SidebarItem
+    const active = props.active ? 'active' : '';
+
+    return (
+        <div disabled className="sidebar__item">
+            <div disabled className={`sidebar__item-inner ${active}`}>
+                <i className={props.icon}></i>
+                <span >
+                    {props.title}
+                    {props.status}
+                </span>
+            </div>
+        </div>
+
+    )
+}
+

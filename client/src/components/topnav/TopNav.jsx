@@ -10,16 +10,11 @@ import Dropdown from '../dropdown/Dropdown'
 
 import ThemeMenu from '../thememenu/ThemeMenu'
 
-
-
 import user_menu from '../../assets/JsonData/user_menus.json'
 
 import AuthAction from '../../services/Action'
 
 import Moment from 'react-moment';
-
-
-
 
 import 'moment/locale/fr';
 
@@ -32,7 +27,7 @@ const user = AuthService.getCurrentUser();
 
 const renderNotificationItem = (item, index) => (
     <div className="notification-item" key={index}>
-       <i class='bx bxs-notepad' ></i>
+        <i class='bx bxs-notepad' ></i>
         <span>{item.nom_societe} RDV:  <Moment fromNow>{item.date_rdv}</Moment></span>
     </div>
 )
@@ -48,7 +43,7 @@ const renderUserToggle = (user) => (
     </div>
 )
 
-const renderUserMenu =(item, index) => (
+const renderUserMenu = (item, index) => (
     <Link to='/' key={index}>
         <div className="notification-item">
             <i className={item.icon}></i>
@@ -59,71 +54,67 @@ const renderUserMenu =(item, index) => (
 
 const Topnav = props => {
     const [currentUser, setCurrentUser] = useState(undefined);
-    const[Action,SetAction]=useState([]);
+    const [Action, SetAction] = useState([]);
 
-   
-   
-     useEffect(()=>{
+
+
+    useEffect(() => {
         const user = AuthService.getCurrentUser();
-            if (user){
-                 //ACTION 
-                 AuthAction.findAll().then((response) => {
-                    SetAction(response.data)
-                })
-            .catch((e) => {
-                console.log(e);
-            });
+        if (user) {
+            //ACTION 
+            AuthAction.findAll().then((response) => {
+                SetAction(response.data)
+            })
+                .catch((e) => {
+                    console.log(e);
+                });
 
-                setCurrentUser(user)
-                
-            }
-    
-       
-     },[])
-     console.log(Action)
-     const Action_util =Action.filter(task=>task.id_utili===currentUser.id)
-     console.log(Action_util)
-     console.log(Action)
-     let date = new Date()
-     const mysn =1000 * 3600 * 24
-     const fltr_date =Action.filter(task=>((   (new Date (task.date_rdv)-date)/mysn)<7)  &&((new Date (task.date_rdv)-date)/mysn)>0)
+            setCurrentUser(user)
 
-     const Action_util1 =fltr_date.filter(task=>task.id_utili===currentUser.id)
-     console.log(fltr_date )
-     return (
+        }
+
+
+    }, [])
+    const Action_util = Action.filter(task => task.id_utili === currentUser.id)
+    let date = new Date()
+    const mysn = 1000 * 3600 * 24
+    const fltr_date = Action.filter(task => (((new Date(task.date_rdv) - date) / mysn) < 7) && ((new Date(task.date_rdv) - date) / mysn) > 0)
+
+    const Action_util1 = fltr_date.filter(task => task.id_utili === currentUser.id)
+    return (
         <div>
-            {user?(
-        
+            {user ? (
+
                 <div className='topnav'>
                     <div className="input-group mb-3">
-                    <div className="topnav">
-                      <div className="topnav__search">
-                         
-                      </div>
-                    </div> 
-                  </div>
+                        <div className="topnav">
+                            <div className="topnav__search">
+
+                            </div>
+                        </div>
+                    </div>
                     <div className="topnav__right">
                         <div className="topnav__right-item">
                             {/* dropdown here */}
-                            {currentUser ?(
-                        
-                        <Link>
-                        <div  className="sidebar__item">
-                            <div  className={`sidebar__item-inner`}>
-                            <i className='bx bxs-user-check' ></i>
-                                <span >
-                                {currentUser.username}
-                                </span>
-                            </div>
-                            
-                        </div>
-                        </Link>
-                            ):(
+                            {currentUser ? (
+
+                               
+                                    <div className="sidebar__item">
+                                        <div className={`sidebar__item-inner`}>
+                                            <i className='bx bxs-user-check' ></i>
+                                            <span >
+                                                {currentUser.username}
+                                            </span>
+                                        </div>
+
+                                    </div>
+                               
+                            ) : (
                                 <Dropdown
-                                customToggle={() => renderUserToggle(curr_user)}
-                                contentData={user_menu}
-                                renderItems={(item, index) => renderUserMenu(item, index)}
-                            />
+                                    customToggle={() => renderUserToggle(curr_user)}
+                                    contentData={user_menu}
+                                    renderItems={(item, index) => renderUserMenu(item, index)}
+                                />
                             )}
                         </div>
                         <div className="topnav__right-item">
@@ -132,21 +123,21 @@ const Topnav = props => {
                                 badge={Action_util1.length}
                                 contentData={Action_util1}
                                 renderItems={(item, index) => renderNotificationItem(item, index)}
-                                renderFooter={() => <Link to='/'>View All</Link>}
+                              
                             />
                             {/* dropdown here */}
                         </div>
                         <div className="topnav__right-item">
-                            <ThemeMenu/>
+                            <ThemeMenu />
                         </div>
                     </div>
                 </div>
-                ):(
-                    <div>               
-                    </div>
-                )}
-        </div>    
-       
+            ) : (
+                <div>
+                </div>
+            )}
+        </div>
+
     )
 }
 
