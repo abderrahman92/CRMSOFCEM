@@ -23,6 +23,9 @@ module.exports =(sequelize,Sequelize)=>{
     },
     date_rdv: {
       type: Sequelize.DATE,
+    },
+    validation: {
+      type: Sequelize.STRING,
     }
     
   });

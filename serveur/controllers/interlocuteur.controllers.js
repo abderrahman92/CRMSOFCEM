@@ -42,4 +42,27 @@ exports.findAll = (req, res) => {
       });
     });
 };
+// modify Interlocuteur
+exports.update = (req, res) => {
+  const id = req.params.id;
 
+  Interlocuteur.update(req.body, {
+    where: { id_interlocuteur: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Interlocuteur modifier avec succes."
+        });
+      } else {
+        res.send({
+          message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating Tutorial with id=" + id
+      });
+    });
+};
