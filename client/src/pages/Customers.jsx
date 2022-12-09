@@ -210,7 +210,7 @@ function Customers () {
                {/* liste des connections */}
                 <div className="card card-container">
                   <div className="list row">
-                  <h2 className=" col-md-6 page-`header">Liste des Sociétées</h2> 
+                  <h2 className=" col-md-6 page-`header">Liste des Sociétés</h2> 
                      {/* SEARCH INPUT */}
                     <div className="col-md-4 list">
                         <div className="input-group mb-3">
@@ -236,7 +236,7 @@ function Customers () {
                               <TableRow>
                               
                                   <TableCell>Société</TableCell>
-                                  <TableCell align='left' style={{ minWidth:110}}>Adresse postal</TableCell>
+                                  <TableCell align='left' style={{ minWidth:110}}>Adresse postale</TableCell>
                                 
                                   <TableCell align='left' style={{ minWidth:80}}>Code naf</TableCell>
                                   <TableCell align='left' style={{ minWidth:50}}>Syndicat</TableCell>
@@ -252,7 +252,7 @@ function Customers () {
                                     <TableCell  align='left' style={{ minWidth:175}}>
                                         <Grid container >
                                             <Grid item lg={10}>
-                                              <Typography className={classes.name} color="textSecondary" variant="body2"><i class='bx bxs-bank'></i>:{row.nom_soc}</Typography>
+                                              <Typography className={classes.name} color="textSecondary" variant="body2"><i class='bx bxs-bank'></i><a href={`/Societe/${row.siret}`}>{row.nom_soc}</a></Typography>
                                               <Typography  variant="body3" >{row.siret}</Typography>
                                               <Typography color="textSecondary" variant="body2">{row.siren}</Typography>
                                             </Grid>
@@ -261,8 +261,8 @@ function Customers () {
                                       
                                     <TableCell align='left' style={{ minWidth:150}}>
                                         <Grid >
-                                          <Typography style={{ minWidth:50}}> {row.adresse_local}</Typography>
-                                          <Typography color="textSecondary" variant="body2">{row.code_postal} {row.ville_soc}</Typography>
+                                          <Typography style={{ minWidth:50}}>{row.code_postal} {row.ville_soc} </Typography>
+                                          <Typography color="textSecondary" variant="body2">{row.adresse_local}</Typography>
                                         </Grid>
                                     
                                     </TableCell>   

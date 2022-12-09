@@ -4,7 +4,7 @@ import './layout.css'
 
 import Sidebar from '../sidebar/Sidebar'
 import TopNav from '../topnav/TopNav'
-import Routes from '../Routes'
+import CRMRoutes from '../Routes'
 
 import { BrowserRouter, Route } from 'react-router-dom'
 
@@ -36,7 +36,7 @@ const Layout = () => {
                     <div className="layout__content">
                         <TopNav/>
                         <div className="layout__content-main">
-                            <Routes/>
+                            <CRMRoutes/>
                         </div>
                     </div>
                 </div>

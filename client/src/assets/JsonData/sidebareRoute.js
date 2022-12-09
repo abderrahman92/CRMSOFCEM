@@ -11,13 +11,13 @@ export let desinterlocuteur = {
     "status": "desactive"
 }
 export let Action = {
-    "display_name": "action",
+    "display_name": "Activités commerciales",
     "route": "/Action",
     "icon": "bx bx-user-pin",
     "status": "active"
 }
 export let desAction = {
-    "display_name": "action",
+    "display_name": "Activités commerciales",
     "route": "/Action",
     "icon": "bx bx-user-pin",
     "status": "desactive"
@@ -36,7 +36,7 @@ export let desparametre = {
 }
 
 export let contrat = {
-    "display_name": "Contrat",
+    "display_name": "Contrats",
     "route": "/Contrat",
     "icon": "bx bxs-book-content",
     "status": "active"

@@ -19,7 +19,9 @@ class AuthInterlocuteur {
   };
 
 //modifier les interlocuteurs
-  
+  update = (id, data) => {
+  return  axios.put(API_URL + `interlocuteur/update/${id}`, data);
+};
  
 }
 

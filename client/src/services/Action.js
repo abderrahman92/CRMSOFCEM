@@ -18,6 +18,9 @@ class AuthAction {
 
   };
 //modifier l'action 
+update = (id, data) => {
+  return  axios.put(API_URL + `action/update/${id}`, data);
+};
 
 }
 

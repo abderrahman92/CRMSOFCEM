@@ -14,8 +14,7 @@ import Box from '@mui/material/Box';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Stack from '@mui/material/Stack';
 import moment from "moment";
-import "moment/locale/fr";
-
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 //table class
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -60,22 +59,38 @@ const renderOrderHead = (item, index) => (
 
 
 const Dashboard = () => {
+    //admin user 
+    const [IsAdmin, setIsAdmin] = useState(undefined);
 
     //liste des societer
     const [ListTest, SetTest] = useState([]);
     const [Cemeca, SetIscemeca] = useState(false);
 
     //afficher le user actuelle 
-    const [currentUser, setCurrentUser] = useState(undefined);
+    const [currentUser, setCurrentUser] = useState([]);
 
     //liste des actions 
     const [Action, SetAction] = useState([]);
     const Action_util = Action.filter(task => task.id_utili === currentUser.id)
+    Action_util.sort((b, a) =>  new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
+
 
 
     useEffect(() => {
         const user = AuthService.getCurrentUser();
+        
+
         if (user) {
+            //Role ADMIN
+            UserService.getAdminBoard().then(
+                () => {
+
+                    setIsAdmin(true)
+                },
+                error => {
+                    setIsAdmin(false);
+                }
+            );
             //ACTION 
             AuthAction.findAll().then((response) => {
                 SetAction(response.data)
@@ -103,6 +118,7 @@ const Dashboard = () => {
                 response => {
                     axios.get("http://localhost:8080/sofitech").then((response) => {
                         SetTest(response.data);
+                        console.log(ListTest)
                     })
                 },
 
@@ -114,9 +130,13 @@ const Dashboard = () => {
     }, [])
 
     // date time input field Action
-    var x = new Date();
-    const [valueDate1, setValueDate1] = React.useState(new Date());
-    const [valueDate2, setValueDate2] = React.useState(new Date());
+    const event = new Date();
+
+    event.setMonth(event.getMonth() + 1);
+
+
+    const [valueDate1, setValueDate1] = React.useState();
+    const [valueDate2, setValueDate2] = React.useState(event);
 
     const handleChangeDate1 = (newValue) => {
         setValueDate1(newValue);
@@ -223,25 +243,30 @@ const Dashboard = () => {
 
 
 
-    //action
-    const statusCards = [   
-        {
-            "icon": "bx bxs-user-detail",
-            "count": fltr_date.length,
-            "title": "Toutes les Actions "
-        },
+    //carde action user
+    const statusCard = [
         {
             "icon": "bx bx-bar-chart-alt",
             "count": filtre_date_Action_util1.length,
-            "title": "Vos Actions"
+            "title": "Vos Activités "
         }
     ]
+    //card acrion admin
+    const statusCardAdmin = [
+
+        {
+            "icon": "bx bxs-user-detail",
+            "count": fltr_date.length,
+            "title": "Activités commerciales"
+        }
+    ]
+
     //contrats
     const StatusContrat = [
         {
             "icon": "bx bxs-contact",
             "count": 0,
-            "title": "Clients SOFITECH "
+            "title": "Sociétaire SOFITECH "
         }
     ]
 
@@ -262,7 +287,7 @@ const Dashboard = () => {
             {/* si le client est connecter*/}
             {currentUser ? (
                 <div>
-                    <h2 className="page-header">tableau de bord
+                    <h2 className="page-header">Tableau de bord
                     </h2>
                     <Box
                         component="form"
@@ -273,10 +298,12 @@ const Dashboard = () => {
                         autoComplete="off"
                     >
                         <div className="row">
+
                             <div className="col-6">
                                 <div className="row">
                                     <div className="col-6">
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <LocalizationProvider dateAdapter={AdapterMoment} >
+
                                             <Stack spacing={3}>
                                                 <DesktopDatePicker
                                                     label="Date debut d'action"
@@ -289,7 +316,7 @@ const Dashboard = () => {
                                     </div>
 
                                     <div className="col-6">
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <LocalizationProvider dateAdapter={AdapterMoment}>
                                             <Stack spacing={3}>
                                                 <DesktopDatePicker
                                                     label="Date fin d'action"
@@ -308,20 +335,66 @@ const Dashboard = () => {
                         {/* carte des actions  */}
                         <div className="col-6">
                             <div className="row">
+                                <div>
+                                    {IsAdmin ? (
+                                        <div className='row'>
+                                            {
+                                                statusCard.map((item, index) => (
+                                                    <div className="col-6" key={index}>
+                                                        <a href="Action/">
+                                                            <StatusCard
+                                                                icon={item.icon}
+                                                                count={item.count}
+                                                                title={item.title}
+                                                            />
+                                                        </a>
+                                                    </div>
+                                                ))  
+                                            }
+                                            {
+                                                statusCardAdmin.map((item, index) => (
+                                                    <div className="col-6" key={index}>
+                                                        <a href="Action/">
+                                                            <StatusCard
+                                                                icon={item.icon}
+                                                                count={item.count}
+                                                                title={item.title}
+                                                            />
+                                                        </a>
+                                                    </div>
+                                                ))  
+                                            }
 
-                                {
-                                    statusCards.map((item, index) => (
-                                        <div className="col-6" key={index}>
-                                            <a href="Action/32143789900057">
-                                                <StatusCard
-                                                    icon={item.icon}
-                                                    count={item.count}
-                                                    title={item.title}
-                                                />
-                                            </a>
                                         </div>
-                                    ))
-                                }
+                                  
+                                       
+
+                                    ) : (
+                                        <div>
+                                            {
+                                                statusCard.map((item, index) => (
+                                                    
+                                                        <div className="row justify-content-md-center">
+                                                            <div className="col-6" key={index}>
+                                                                <a href="#">
+                                                                    <StatusCard
+                                                                        icon={item.icon}
+                                                                        count={item.count}
+                                                                        title={item.title}
+                                                                    />
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+                                                   
+                                                ))
+                                            }
+                                        </div>
+
+                                    )}
+                                </div>
+
+
 
                             </div>
                         </div>
@@ -383,7 +456,7 @@ const Dashboard = () => {
                         <div className="col-6">
                             <div className="card">
                                 <div className="card__header">
-                                    <h3>Dernières Sociétés crées</h3>
+                                    <h3>Sociétées</h3>
                                 </div>
                                 <div className="card__body">
 
@@ -400,9 +473,9 @@ const Dashboard = () => {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {ListTest.map((row) => (
+                                                {ListTest.map((row,index) => (
                                                     <TableRow
-                                                        key={row.siret}
+                                                        key={index}
                                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                     >
                                                         <TableCell component="th" scope="row">
@@ -429,7 +502,7 @@ const Dashboard = () => {
 
                                 </div>
                                 <div className="card__footer">
-                                    <Link to='Societes'>view all</Link>
+                                    <Link to='Societes'>Voir plus</Link>
                                 </div>
                             </div>
                         </div>
@@ -437,7 +510,7 @@ const Dashboard = () => {
                         <div className="col-6">
                             <div className="card">
                                 <div className="card__header">
-                                    <h3>Dernières actions crées</h3>
+                                    <h3>Activités commerciales</h3>
                                 </div>
                                 <div className="card__body">
 
@@ -453,9 +526,9 @@ const Dashboard = () => {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {Action_util.map((row) => (
+                                                {Action_util.map((row,index) => (
                                                     <TableRow
-                                                        key={row.nom_societe}
+                                                        key={index}
                                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                     >
                                                         <TableCell component="th" scope="row">
@@ -472,7 +545,7 @@ const Dashboard = () => {
 
                                 </div>
                                 <div className="card__footer">
-                                    <Link to='Societes'>view all</Link>
+                                    <Link to='Societes'>Plus info</Link>
                                 </div>
                             </div>
                         </div>

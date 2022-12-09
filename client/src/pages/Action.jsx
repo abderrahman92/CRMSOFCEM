@@ -189,6 +189,7 @@ import  liste  from "../assets/JsonData/centre-affaire.json";
               const handleInputChange = event => {
                 const { name, value } = event.target;
                 setAction({ ...Action, [name]: value });
+                console.log(Action.description)
 
               };
             //liste type action  

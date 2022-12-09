@@ -15,6 +15,7 @@ module.exports = function(app) {
       app.get('/'+route_front[i], (req, res) =>
       res.sendFile(path.join(__dirname, '../../client/build/index.html'))
     );
+    
     }
 
     //all routes react front end 

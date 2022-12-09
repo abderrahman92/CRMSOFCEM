@@ -14,6 +14,7 @@ import axios from 'axios';
 import liste from "../assets/JsonData/liste_syndicat.json"
 import origine_prospect from "../assets/JsonData/origine_prospect.json"
 import Button from '@mui/material/Button';
+import UserService from "../services/user.service";
 import dotenv from 'dotenv'
 
 const AddTutorial = () => {
@@ -64,6 +65,9 @@ const AddTutorial = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(undefined);
   const [myJSON, setactive] = useState([]);
+  const [Cemeca,setCemeca] = useState(false)
+  const [Sofitech,setSofitech]= useState(false)
+  const [Admin,setAdmin] = useState()
   const form = useRef();
   const checkBtn = useRef();
 
@@ -72,8 +76,29 @@ const AddTutorial = () => {
     setactive(Array.isArray(e) ? e.map(x => x.NOM) : [])
   }
 
+  console.log(UserService.getCemecaBoard)
 
+ const Retriverole  = () =>{
+  const cemeca = UserService.getCemecaBoard
+  const sofitech = UserService.getSofitechBoard
+  const admin  = UserService.getAdminBoard()
+      admin.then(
+    response => {
+       
+        setSofitech(true)
+        setCemeca(false)
+       
 
+    },
+    
+    error => {
+        setSofitech(false)
+        setCemeca(true)
+       
+    }
+)
+
+ }
 
   const saveSociete = (e) => {
     const syndicat = myJSON.join();
@@ -144,6 +169,8 @@ const AddTutorial = () => {
 
 
   //API INSEE
+  const denomination = 'https://api.pappers.fr/v2/entreprise/?siret='
+  
   const API_INSEE_SIRET = 'https://api.pappers.fr/v2/entreprise/?siret='
   var b = String(Societe.siret)
   console.log(b)
@@ -159,6 +186,7 @@ const AddTutorial = () => {
 
   const [SIRETAPI, setSIRETAPI] = useState([]);
   const [Etablissement, SetETA] = useState([]);
+  const [value, setValue] = useState("");
   const handleInputChange = event => {
     const { name, value } = event.target;
     setSociete({ ...Societe, [name]: value });
@@ -188,20 +216,22 @@ const AddTutorial = () => {
 
   const SIREN = () => {
 
-    return (<div>
-      {Siren.map((e, valeur) =>
-        <Input
-          key={valeur}
-          type="text"
-          className="form-control"
-          id="title"
-          value={Societe.siren = e[1]}
-          onChange={handleInputChange}
-          validations={[required, vsiren]}
-          name="siren"
-        />
-      )}
-    </div>)
+    return (
+      <div className="col-6">
+        {Siren.map((e, valeur) =>
+          <Input
+            key={valeur}
+            type="text"
+            className="form-control"
+            id="title"
+            value={Societe.siren = e[1]}
+            onChange={handleInputChange}
+            validations={[required, vsiren]}
+            name="siren"
+          />
+        )}
+      </div>
+    )
 
   }
 
@@ -216,7 +246,6 @@ const AddTutorial = () => {
           id="title"
           value={Societe.nom_soc = e[1]}
           onChange={handleInputChange}
-          validations={[required, vnom_soc]}
           name="nom_soc"
         />
       )}
@@ -323,101 +352,146 @@ const AddTutorial = () => {
   return (
     <div className="submit-form">
       <div className="card card-container">
+        
+        <Form onSubmit={saveSociete} ref={form}>
+       
+            <div>
+            <h3><i class='bx bxs-bank danger'></i> Chercher une société</h3>
+              <div className="form-group">
+                <div className="row">
+                  <div className="col-6">
+
+                    <label htmlFor="title">Recherche entreprise</label>
+                    <Input
+                      type="text"
+                      className="form-control"
+                      id="title"
+                      onChange={e => setValue(e.target.value)} 
+                      value={value}
+                      validations={[required, vsiret]}
+                      name="siret"
+                    />
+                    <Button href={`https://www.pappers.fr/recherche?q=${value}`}>valider</Button>
+                   
+                  </div>
+                 
+                </div>
+
+              </div>
+
+            </div>
+          
+  
+           
+            
+
+         
+
+          <CheckButton style={{ display: "none" }} ref={checkBtn} />
+        </Form>
+      </div>
+      <div className="card card-container">
+     
         <h3><i class='bx bxs-bank danger'></i> Ajouter une Société</h3>
         <Form onSubmit={saveSociete} ref={form}>
           {!successful && (
             <div>
 
               <div className="form-group">
+                <div className="row">
+              
+                  <div className="col-6">
+                    <label htmlFor="title">siret</label>
+                    <Input
+                      type="text"
+                      className="form-control"
+                      id="title"
+                      onChange={handleInputChange}
+                      value={Societe.siret}
+                      validations={[required, vsiret]}
+                      name="siret"
+                    />
+                    <Button onClick={handleInputChange} variant="contained">valider</Button>
+                  </div>
+                </div>
 
-                <label htmlFor="title">siret</label>
-                <Input
-                  type="text"
-                  className="form-control"
-                  id="title"
-                  onChange={handleInputChange}
-                  value={Societe.siret}
-                  validations={[required, vsiret]}
-                  name="siret"
-                />
-                <Button onClick={handleInputChange} variant="contained">valider</Button>
               </div>
-             
+
             </div>
           )}
-           {loading ?
-                (
-                  <div>
-                    <Typography component="h1" variant="h5">
+          {loading ?
+            (
+              <div>
+                <Typography component="h1" variant="h5">
 
-                      <Loader_cherche />
-                    </Typography>
-                  </div>
-                )
-                : (
-                  <div></div>
-                  )}       
+                  <Loader_cherche />
+                </Typography>
+              </div>
+            )
+            : (
+              <div></div>
+            )}
 
           {result.length > 0 && (
-            
+
             <div>
-              
-                  <div>
 
-                    <div className="form-group">
-                      <label htmlFor="title">siren</label>
+              <div>
 
-                      <SIREN />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="title">nom de la societe</label>
-                      <NOM />
-                    </div>
+                <div className="form-group">
+                  <label htmlFor="title">siren</label>
 
-                    <div className="form-group">
-                      <label htmlFor="title">code naf</label>
-                      <CODENAF />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="title">Adresse local</label>
-                      <ADRESSE />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="title">pays</label>
-                      <PAYE />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="title">Ville</label>
-                      <VILLE />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="text">Code postale</label>
-                      <CODE />
-                    </div>
-                    <div className="form-group">
+                  <SIREN />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="title">nom de la societe</label>
+                  <NOM />
+                </div>
 
-                      <label htmlFor="title">origine du prospect </label>
-                      <Multiselect
-                        displayValue="NOM"
-                        groupBy="TYPE"
-                        value="4"
-                        isObject={true}
-                        selectedValues={console.log}
-                        onChange={console.log}
-                        id={console.log}
-                        onNOMPressFn={function noRefCheck() { }}
-                        onRemove={function noRefCheck() { }}
-                        onSearch={function noRefCheck() { }}
-                        onSelect={land}
-                        options={origine_prospect}
-                        showCheckbox
-                      />
+                <div className="form-group">
+                  <label htmlFor="title">code naf</label>
+                  <CODENAF />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="title">Adresse local</label>
+                  <ADRESSE />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="title">pays</label>
+                  <PAYE />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="title">Ville</label>
+                  <VILLE />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="text">Code postale</label>
+                  <CODE />
+                </div>
+                <div className="form-group">
 
-                    </div>
-                  </div>
-              
+                  <label htmlFor="title">origine du prospect </label>
+                  <Multiselect
+                    displayValue="NOM"
+                    groupBy="TYPE"
+                    value="4"
+                    isObject={true}
+                    selectedValues={console.log}
+                    onChange={console.log}
+                    id={console.log}
+                    onNOMPressFn={function noRefCheck() { }}
+                    onRemove={function noRefCheck() { }}
+                    onSearch={function noRefCheck() { }}
+                    onSelect={land}
+                    options={origine_prospect}
+                    showCheckbox
+                  />
 
-     
+                </div>
+              </div>
+
+
+
 
               <button className="btn btn-success">
                 AJOUTER
@@ -426,59 +500,59 @@ const AddTutorial = () => {
 
             </div>
           )}
-                   <div className="form-group">
+          <div className="form-group">
 
-<label htmlFor="title">Syndicat</label>
-<Multiselect
-  displayValue="NOM"
-  groupBy="TYPE"
-  value="4"
-  isObject={true}
-  selectedValues={console.log}
-  onChange={console.log}
-  id={console.log}
-  onNOMPressFn={function noRefCheck() { }}
-  onRemove={function noRefCheck() { }}
-  onSearch={function noRefCheck() { }}
-  onSelect={land}
-  options={liste}
-  showCheckbox
-/>
+            <label htmlFor="title">Syndicat</label>
+            <Multiselect
+              displayValue="NOM"
+              groupBy="TYPE"
+              value="4"
+              isObject={true}
+              selectedValues={console.log}
+              onChange={console.log}
+              id={console.log}
+              onNOMPressFn={function noRefCheck() { }}
+              onRemove={function noRefCheck() { }}
+              onSearch={function noRefCheck() { }}
+              onSelect={land}
+              options={liste}
+              showCheckbox
+            />
 
-</div>
+          </div>
 
-<div className="form-group">
-<label htmlFor="title">Observation</label>
-<Input
-  type="text"
-  className="form-control"
-  id="title"
-  defaultValue="Thierry"
-  value={Societe.observation}
-  onChange={handleInputChange}
-  validations={[required, vobservation]}
-  name="observation"
-/>
-</div>
-<div className="form-group">
-<label htmlFor="title">telephone Societes</label>
-<Input
-  type="text"
-  className="form-control"
-  id="title"
-  value={Societe.tel}
-  onChange={handleInputChange}
-  validations={[required, vtel]}
-  name="tel"
-/>
-</div>
+          <div className="form-group">
+            <label htmlFor="title">Observation</label>
+            <Input
+              type="text"
+              className="form-control"
+              id="title"
+              defaultValue="Thierry"
+              value={Societe.observation}
+              onChange={handleInputChange}
+              validations={[required, vobservation]}
+              name="observation"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="title">telephone Societes</label>
+            <Input
+              type="text"
+              className="form-control"
+              id="title"
+              value={Societe.tel}
+              onChange={handleInputChange}
+              validations={[required, vtel]}
+              name="tel"
+            />
+          </div>
 
 
-<select validations={[required, vid_role]} value={Societe.id_role} onChange={handleInputChange} name="id_role" >
-<option>select une valeur</option>
-<option value="1">cemeca</option>
-<option value="2">sofitech</option>
-</select>
+          <select validations={[required, vid_role]} value={Societe.id_role} onChange={handleInputChange} name="id_role" >
+            <option>select une valeur</option>
+            <option value="1">cemeca</option>
+            <option value="2">sofitech</option>
+          </select>
 
           {message && (
             <div className="form-group">

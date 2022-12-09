@@ -15,13 +15,11 @@ const Sidebar = props => {
     const [new_sidbar, setSidbar] = useState([]);
     const [currentUser, setCurrentUser] = useState(undefined);
     const [roleAdmin, setRoleAdmin] = useState([]);
-    const [roleAuth, setRoleAuth] = useState([]);
     const [cemeca, setcemeca] = useState(false);
     const [sofitech, setSofitech] = useState(false);
-    const [loader, setloader] = useState(false);
     // Get  URL from window location
         const nameUrl = window.location.href.slice(21, 28)
-        const nouveaustate = [...new_sidbar]
+       
 
     // DECONNECTION
         const logOut = () => {AuthService.logout()};
@@ -30,31 +28,25 @@ const Sidebar = props => {
     // GET ROLE 
         const retrieveRole = () => {
         if (user) {
+            const nouveaustate = [...new_sidbar]
+            setCurrentUser(user)
             //user 
             nouveaustate.push(sidebareRoute.Tableaudebord, sidebareRoute.ajouter,sidebareRoute.Societes);
             const expr = nameUrl;
-           
             
             UserService.getSofitechBoard().then(
                 response => {
                    
                     setSofitech(true)
                     setcemeca(false)
-                    setRoleAuth(response.data);
+                   
 
                 },
                 
                 error => {
                     setSofitech(false)
                     setcemeca(true)
-                    setRoleAuth({
-                        content:
-                            (error.response &&
-                                error.response.data &&
-                                error.response.data.message) ||
-                            error.message ||
-                            error.toString()
-                    });
+                   
                 }
             );
             
@@ -68,7 +60,7 @@ const Sidebar = props => {
                     }
                   
                     setRoleAdmin(response.data);
-                    setCurrentUser(user)
+                   
                 
                     
                     
@@ -124,8 +116,10 @@ const Sidebar = props => {
         }
         //DECONNECTION
         else{
+            const nouveaustate = [...new_sidbar]
             nouveaustate.push(sidebareRoute.connexion);
             setSidbar(nouveaustate)
+            console.log('test')
         }
 
         };
